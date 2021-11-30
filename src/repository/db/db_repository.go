@@ -5,10 +5,6 @@ import (
 	"github.com/azzamjiul/bookstore_oauth-api/src/utils/error_utils"
 )
 
-func NewRepository() DbRepository {
-	return &dbRepository{}
-}
-
 type DbRepository interface {
 	GetById(string) (*access_token.AccessToken, *error_utils.RestErr)
 }
@@ -16,6 +12,10 @@ type DbRepository interface {
 type dbRepository struct {
 }
 
+func NewRepository() DbRepository {
+	return &dbRepository{}
+}
+
 func (r *dbRepository) GetById(id string) (*access_token.AccessToken, *error_utils.RestErr) {
-	return nil, nil
+	return nil, error_utils.NewInternalServerError("database connection not implemented yet")
 }
