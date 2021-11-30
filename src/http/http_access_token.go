@@ -2,10 +2,11 @@ package http
 
 import (
 	"github.com/azzamjiul/bookstore_oauth-api/src/domain/access_token"
+	"github.com/gin-gonic/gin"
 )
 
 type AccessTokenHandler interface {
-	GetById()
+	GetById(*gin.Context)
 }
 
 type accessTokenHandler struct {
