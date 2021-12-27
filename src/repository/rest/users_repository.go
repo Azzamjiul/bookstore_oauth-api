@@ -1,11 +1,11 @@
 package rest
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/azzamjiul/bookstore_oauth-api/src/domain/users"
 	"github.com/azzamjiul/bookstore_oauth-api/src/utils/error_utils"
+	"github.com/azzamjiul/bookstore_oauth-api/src/utils/http_utils"
 	"github.com/mercadolibre/golang-restclient/rest"
 )
 
@@ -31,23 +31,13 @@ func (r *usersRepository) LoginUser(email string, password string) (*users.User,
 		Email:    email,
 		Password: password,
 	}
-	response := usersRestClient.Post("/users/login", request)
-	if response == nil || response.Response == nil {
-		return nil, error_utils.NewInternalServerError("invalid restclient response when trying to login user")
-	}
-
-	if response.StatusCode > 299 {
-		var restErr error_utils.RestErr
-		err := json.Unmarshal(response.Bytes(), &restErr)
-		if err != nil {
-			return nil, error_utils.NewInternalServerError("invalid error interface when trying to login user")
-		}
-		return nil, &restErr
-	}
 
 	var user users.User
-	if err := json.Unmarshal(response.Bytes(), &user); err != nil {
-		return nil, error_utils.NewInternalServerError("error when trying to unmarshal users response")
+	headers := map[string]string{"Content-Type": "application/json"}
+
+	_, err := http_utils.New().Post("http://localhost:8081/users/login", request, headers, &user)
+	if err != nil {
+		return nil, error_utils.NewInternalServerError(err.Error())
 	}
 
 	return &user, nil
